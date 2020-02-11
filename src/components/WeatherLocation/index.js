@@ -1,31 +1,21 @@
 import React, { Component } from 'react';
+
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Button from '@material-ui/core/Button';
+
 import Location from './Location';
 import WeatherData from './WeatherData';
-import './styles.css'
-import { CLOUD, CLOUDY, SUN, RAIN, SNOW, WINDY, }
-    from '../../constants/weathers';
+import endPoint from '../../constants/EndPoints';
+import transformWeather from '../../services/transformWeather';
 
-import Button from 'react-bootstrap/Button';
+import './styles.css';
 
-const data = {
-    temperature: 15,
-    weatherState: SUN,
-    humidity: 10,
-    wind: "10 m/s",
-}
 
-const data2 = {
-    temperature: 5,
-    weatherState: SNOW,
-    humidity: 15,
-    wind: "10 m/s",
-}
 
-const LOCATION = "El Santuario,Co";
-const API_KEY = "6b0d4742e5a29e5a2daecd6001980885";
-const URL_BASE_WEATHER = "http://api.openweathermap.org/data/2.5/weather";
-const API_WEATHER = `${URL_BASE_WEATHER}?q=${LOCATION}&APPID=${API_KEY}`;
-const EO = "http://api.openweathermap.org/data/2.5/weather?q=London,uk&APPID=6b0d4742e5a29e5a2daecd6001980885";
+
+
+
+
 
 
 class WeatherLocation extends Component {
@@ -34,22 +24,44 @@ class WeatherLocation extends Component {
         super();
         this.state = {
             city: "El santuario",
-            data: data,
+            data: null,
         };
+        console.log("constructor");
     }
 
+    componentDidMount() {
+        console.log("componentDidMount");
+        this.handleOnUpdateClick();
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        console.log("componentDidUpdate");
+    }
+
+
+
+
     handleOnUpdateClick = () => {
-        fetch(API_WEATHER);
+        fetch(endPoint).then(resolve => {
+            return resolve.json();
+        }).then(data => {
+            const newWeather = transformWeather(data);
+            console.log(newWeather);
+            this.setState({
+                data: newWeather
+            });
+        });
     }
     render() {
-        const {city, data} = this.state;
+        console.log("render");
+        const { city, data } = this.state;
         return (
             <div className="weatherLocationCont">
                 <div>
                     <Location city={city}></Location>
-                    <WeatherData data={data}></WeatherData>
+                    {data ? <WeatherData data={data}></WeatherData> : <CircularProgress/>}
                     <br />
-                    <Button variant="primary" onClick={this.handleOnUpdateClick}>Actualizar</Button>
+                    <Button variant="contained" color ="primary" onClick={this.handleOnUpdateClick}>Actualizar</Button>
                 </div>
             </div>
         );
