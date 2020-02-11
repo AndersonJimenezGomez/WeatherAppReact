@@ -21,6 +21,12 @@ const data2 = {
     wind: "10 m/s",
 }
 
+const LOCATION = "El Santuario,Co";
+const API_KEY = "6b0d4742e5a29e5a2daecd6001980885";
+const URL_BASE_WEATHER = "http://api.openweathermap.org/data/2.5/weather";
+const API_WEATHER = `${URL_BASE_WEATHER}?q=${LOCATION}&APPID=${API_KEY}`;
+const EO = "http://api.openweathermap.org/data/2.5/weather?q=London,uk&APPID=6b0d4742e5a29e5a2daecd6001980885";
+
 
 class WeatherLocation extends Component {
 
@@ -33,8 +39,7 @@ class WeatherLocation extends Component {
     }
 
     handleOnUpdateClick = () => {
-        console.log("Actualizado pai!");
-        this.setState({city:"El Santuario", data:data2})
+        fetch(API_WEATHER);
     }
     render() {
         const {city, data} = this.state;
